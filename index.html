@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="pageTitle">ZG Design - برنامج تصميم المجلات والنشر المكتبي الاحترافي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* المتغيرات الأساسية للمظهر */
+        :root {
+            --primary-color: #7bb51c;
+            --primary-hover: #689c14;
+            --bg-gradient-start: #d4fc79;
+            --bg-gradient-end: #96e6a1;
+            --secondary-color: #6c757d;
+            --text-color: #1a1a1a;
+            --text-color-light: #f8f9fa;
+            --text-muted-color: #4a4a4a;
+            --glass-bg: rgba(255, 255, 255, 0.22);
+            --glass-border: rgba(255, 255, 255, 0.35);
+            --glass-shadow: rgba(0, 0, 0, 0.12);
+            --card-inner-bg: rgba(255, 255, 255, 0.15);
+            --body-bg: #f9fbf7;
+            --border-radius: 16px;
+            --transition-speed: 0.3s;
+        }
+
+        body.dark-mode {
+            --primary-color: #8cd622;
+            --primary-hover: #74b815;
+            --bg-gradient-start: #162210;
+            --bg-gradient-end: #1f3319;
+            --text-color: #f0f0f0;
+            --text-color-light: #222;
+            --text-muted-color: #b0b0b0;
+            --glass-bg: rgba(18, 24, 16, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: rgba(0, 0, 0, 0.45);
+            --card-inner-bg: rgba(0, 0, 0, 0.25);
+            --body-bg: #0d120a;
+        }
+
+        /* خلفية حية متدرجة */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-end), var(--primary-color), #2f590c);
+            background-size: 400% 400%;
+            animation: gradientBG 18s ease infinite;
+            transition: background 0.6s ease;
+        }
+
+        body.animation-disabled .background-animation {
+            animation: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', 'Roboto', sans-serif;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            transition: background-color 0.4s, color 0.4s;
+            line-height: 1.8;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        html[lang="zh"] body { font-family: 'Roboto', 'Cairo', sans-serif; }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 var(--glass-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.8s;
+            pointer-events: none;
+        }
+
+        .glass-card:hover::before { left: 150%; }
+
+        /* الهيدر العلوي وأدوات التحكم */
+        .header-controls {
+            padding: 14px 22px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 15px;
+            z-index: 1000;
+        }
+
+        .brand-logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo-area img {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            object-fit: cover;
+        }
+
+        .brand-logo-text {
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+        }
+
+        .brand-logo-text span {
+            color: var(--primary-color);
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .language-switcher {
+            display: flex;
+            background: rgba(0,0,0,0.08);
+            border-radius: 30px;
+            padding: 4px;
+        }
+
+        .language-switcher button {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .language-switcher button.active {
+            background: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(123, 181, 28, 0.4);
+        }
+
+        .control-btn {
+            background: rgba(0,0,0,0.06);
+            border: 1px solid transparent;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: all var(--transition-speed) ease;
+            font-size: 1.1rem;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(0,0,0,0.12);
+            transform: rotate(12deg) scale(1.05);
+            color: var(--primary-color);
+        }
+
+        .theme-toggle .fa-moon { display: none; }
+        .dark-mode .theme-toggle .fa-sun { display: none; }
+        .dark-mode .theme-toggle .fa-moon { display: inline-block; }
+
+        /* بطاقة البرنامج الرئيسية */
+        .app-hero-card {
+            padding: 35px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .app-hero-logo img {
+            width: 140px;
+            height: 140px;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            background: #fff;
+            padding: 4px;
+            object-fit: cover;
+        }
+
+        .app-hero-details {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .app-title-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--text-color);
+            line-height: 1.2;
+        }
+
+        .badge-version {
+            background-color: var(--primary-color);
+            color: #fff;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .app-short-desc {
+            font-size: 1.15rem;
+            margin-bottom: 22px;
+            color: var(--text-color);
+            opacity: 0.95;
+            line-height: 1.7;
+        }
+
+        /* شبكة أزرار التحميل المباشرة وزر الإعلان */
+        .downloads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dl-card {
+            background: var(--card-inner-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .dl-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px var(--glass-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .dl-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .dl-header i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .dl-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            font-weight: 600;
+        }
+
+        .download-btn {
+            position: relative;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-hover));
+            color: #fff;
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(123, 181, 28, 0.35);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(123, 181, 28, 0.5);
+        }
+
+        .download-btn.download-btn-linux {
+            background: linear-gradient(45deg, #e95420, #b5380c);
+            box-shadow: 0 4px 14px rgba(233, 84, 32, 0.35);
+        }
+
+        /* زر مشاهدة الإعلان */
+        .download-btn.download-btn-ads {
+            background: linear-gradient(45deg, #0984e3, #00cec9);
+            box-shadow: 0 4px 14px rgba(9, 132, 227, 0.35);
+        }
+
+        .download-btn.download-btn-ads:hover {
+            box-shadow: 0 6px 18px rgba(9, 132, 227, 0.55);
+        }
+
+        .download-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background-color: rgba(255, 255, 255, 0.35);
+            border-radius: 40px;
+            transition: width 2s ease-out;
+            pointer-events: none;
+        }
+
+        .download-btn.downloading .download-progress { width: 100%; }
+
+        /* الأقسام والمحتوى */
+        .section { margin-bottom: 35px; }
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+            font-weight: 800;
+        }
+
+        /* معرض لقطات الشاشة المتطور */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            box-shadow: 0 6px 16px var(--glass-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            aspect-ratio: 16/11;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            line-height: 1.4;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        /* تفاصيل البرنامج والمميزات */
+        .description-card { padding: 35px; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .feature-box {
+            background: var(--card-inner-bg);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+
+        .feature-box i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-box h4 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        .feature-box p {
+            font-size: 0.95rem;
+            color: var(--text-muted-color);
+            line-height: 1.6;
+        }
+
+        .app-long-desc p { margin-bottom: 15px; font-size: 1.05rem; }
+        .app-long-desc h3 { font-size: 1.4rem; color: var(--primary-color); margin: 25px 0 12px 0; font-weight: 800; }
+        .app-long-desc ul { list-style-position: inside; padding-right: 20px; margin-bottom: 15px; }
+        html[dir="ltr"] .app-long-desc ul { padding-left: 20px; padding-right: 0; }
+        .app-long-desc li { margin-bottom: 8px; }
+
+        /* النوافذ المنبثقة (Modals) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 35px var(--glass-shadow);
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h2 { margin: 0; color: var(--primary-color); font-size: 1.5rem; font-weight: 800; }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-muted-color);
+            transition: transform 0.2s, color 0.2s;
+        }
+        .modal-close-btn:hover { transform: scale(1.2); color: var(--primary-color); }
+        .modal-body {
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px;
+        }
+
+        .modal-body::-webkit-scrollbar { width: 8px; }
+        .modal-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.08); border-radius: 10px; }
+        .modal-body::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 10px; }
+        .modal-footer {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid var(--glass-border);
+            text-align: right;
+        }
+        html[dir="rtl"] .modal-footer { text-align: left; }
+
+        .btn {
+            padding: 10px 22px;
+            font-weight: bold;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+        .btn.btn-secondary { background-color: var(--secondary-color); }
+        .btn.btn-danger { background-color: #dc3545; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* نافذة حول المطور */
+        #about-modal-body { text-align: center; }
+        #about-modal-body .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 15px;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        #about-modal-body h3 { color: var(--primary-color); margin-bottom: 5px; font-size: 1.5rem; }
+        #about-modal-body h4 { font-size: 1.1rem; color: var(--text-muted-color); margin-top: 0; margin-bottom: 20px; }
+        .info-section {
+            margin: 20px 0;
+            background: var(--card-inner-bg);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            text-align: initial;
+        }
+        .info-section h5 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        .certs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .certs-grid img {
+            max-height: 55px;
+            width: auto;
+            opacity: 0.85;
+            transition: all 0.3s;
+        }
+        .certs-grid img:hover { opacity: 1; transform: scale(1.1); }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .project-card {
+            background: rgba(0,0,0,0.08);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .project-card img { width: 100%; border-radius: 6px; }
+
+        .social-card { margin: 15px auto 0 auto; text-align: center; }
+        .social-card .profileimage img { border-radius: 50%; width: 90px; height: 90px; object-fit: cover; }
+        .socialbar {
+            background-color: var(--card-inner-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            max-width: 320px;
+            padding: 10px;
+            margin: 15px auto 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .socialbar a { color: var(--text-color); transition: 0.3s; font-size: 1.2rem; }
+        .socialbar a:hover { color: var(--primary-color); transform: scale(1.2); }
+
+        /* نافذة الخدمات */
+        .services-list { display: flex; flex-direction: column; gap: 12px; }
+        .service-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            background: var(--card-inner-bg);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 1.05rem;
+            border: 1px solid var(--glass-border);
+        }
+        .service-link:hover {
+            background-color: rgba(0,0,0,0.15);
+            transform: translateX(-8px);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        html[dir="ltr"] .service-link:hover { transform: translateX(8px); }
+        .service-link i { font-size: 1.4rem; color: var(--primary-color); width: 30px; text-align: center; }
+
+        /* نافذة الإعدادات */
+        .settings-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--card-inner-bg);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+        .settings-section h4 { margin-bottom: 12px; color: var(--primary-color); border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .setting-item input[type="color"] { border: none; background: transparent; width: 38px; height: 38px; cursor: pointer; border-radius: 50%; }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #aaa; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* عارض الصور المكبرة */
+        .image-modal-content {
+            padding: 8px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            max-width: 92vw;
+            max-height: 92vh;
+            display: flex;
+            position: relative;
+        }
+        #image-modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 2010;
+            color: #fff;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        #image-modal-close-btn:hover { background: rgba(0,0,0,0.85); }
+        #modal-image { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; max-height: 85vh; }
+
+        /* الفوتر */
+        .app-footer {
+            padding: 24px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-muted-color);
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid var(--glass-border);
+            margin-top: 40px;
+        }
+        .app-footer a { color: var(--text-muted-color); text-decoration: none; font-weight: bold; transition: color 0.3s; }
+        .app-footer a:hover { color: var(--primary-color); }
+        .app-footer p { margin-top: 6px; font-size: 0.85rem; opacity: 0.85; }
+
+        @media (max-width: 768px) {
+            .app-hero-card { flex-direction: column; text-align: center; }
+            .app-title-container { justify-content: center; }
+            .downloads-grid { grid-template-columns: 1fr; }
+            .header-controls { justify-content: center; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="background-animation"></div>
+
+    <div class="container">
+        <!-- الهيدر العلوي -->
+        <header class="header-controls glass-card">
+            <a href="#" class="brand-logo-area" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhbh7byuisLdkPaINzubptc6i0d8kTAiZLGVWnCs1T0n5wGH1YR3rwHwFLEl2TwNPelxOIu_GVoaC8Eb3h9qw7IA11EB5rm9D5NLn73-vCkHSwKiZYMsC_arU64KlPUMDX_RMBvCPqNoo9PfCMgbEjbpVnwEbwwikgfqcsJq-FIa_98PWkqtxEYgijyHO8u/s512/ZG-Design-icon.png" alt="ZG Design Logo">
+                <span class="brand-logo-text">ZG <span>Design</span></span>
+            </a>
+            <div class="controls-container">
+                <div class="language-switcher">
+                    <button id="lang-ar" class="active">AR</button>
+                    <button id="lang-en">EN</button>
+                    <button id="lang-zh">ZH</button>
+                </div>
+                <button id="services-toggle-btn" class="control-btn" title="خدماتنا الأخرى / Other Services">
+                    <i class="fas fa-layer-group"></i>
+                </button>
+                <button id="about-toggle-btn" class="control-btn" title="حول المطور / About Developer">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+                <button id="privacy-toggle-btn" class="control-btn" title="سياسة الخصوصية / Privacy Policy">
+                    <i class="fas fa-shield-halved"></i>
+                </button>
+                <button id="settings-toggle-btn" class="control-btn" title="الإعدادات / Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="control-btn theme-toggle" id="theme-toggle-btn" title="تبديل المظهر">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- بطاقة البرنامج والتحميل الرئيسي وزر الإعلان -->
+            <section class="app-hero-card glass-card">
+                <div class="app-hero-logo">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhbh7byuisLdkPaINzubptc6i0d8kTAiZLGVWnCs1T0n5wGH1YR3rwHwFLEl2TwNPelxOIu_GVoaC8Eb3h9qw7IA11EB5rm9D5NLn73-vCkHSwKiZYMsC_arU64KlPUMDX_RMBvCPqNoo9PfCMgbEjbpVnwEbwwikgfqcsJq-FIa_98PWkqtxEYgijyHO8u/s512/ZG-Design-icon.png" alt="ZG Design Icon">
+                </div>
+                <div class="app-hero-details">
+                    <div class="app-title-container">
+                        <h1 class="app-title" data-translate-key="appName">ZG Design</h1>
+                        <span class="badge-version">v0.4.0 • Pro Suite</span>
+                    </div>
+                    <p class="app-short-desc" data-translate-key="shortDescription">
+                        برنامج النشر المكتبي والتخطيط الاحترافي الأقوى لتصميم المجلات والكتب والمنشورات، مع معالج طباعي فائق الدقة، وتدفق نصوص ذكي، وتصدير PDF عالي الجودة للطباعة.
+                    </p>
+
+                    <!-- خيارات التحميل المباشرة وزر مشاهدة الإعلان -->
+                    <div class="downloads-grid">
+                        <!-- تحميل ويندوز -->
+                        <div class="dl-card">
+                            <div class="dl-header">
+                                <i class="fab fa-windows"></i>
+                                <span data-translate-key="os_windows">Windows</span>
+                            </div>
+                            <span class="dl-meta" data-translate-key="meta_windows">x64 Installer (.msi) • 65 MB</span>
+                            <a href="https://drive.google.com/file/d/1mr9Lh7_I_Wb86uhhHXJD7kIec4SGHp88/view?usp=sharing" class="download-btn download-btn-action" data-os="windows">
+                                <i class="fas fa-arrow-down"></i>
+                                <span class="download-text" data-translate-key="dl_btn_win">تحميل لويندوز</span>
+                                <div class="download-progress"></div>
+                            </a>
+                        </div>
+
+                        <!-- تحميل لينكس -->
+                        <div class="dl-card">
+                            <div class="dl-header">
+                                <i class="fab fa-linux"></i>
+                                <span data-translate-key="os_linux">Linux</span>
+                            </div>
+                            <span class="dl-meta" data-translate-key="meta_linux">x86_64 Tarball • 52 MB</span>
+                            <a href="https://drive.google.com/file/d/13sbAR6sPhCdjeIQs4WMXPi9CApIabOfh/view?usp=sharing" class="download-btn download-btn-linux download-btn-action" data-os="linux">
+                                <i class="fas fa-arrow-down"></i>
+                                <span class="download-text" data-translate-key="dl_btn_linux">تحميل للينكس</span>
+                                <div class="download-progress"></div>
+                            </a>
+                        </div>
+
+                        <!-- زر مشاهدة الإعلان -->
+                        <div class="dl-card">
+                            <div class="dl-header">
+                                <i class="fas fa-tv"></i>
+                                <span data-translate-key="watch_ad_title">إعلان البرنامج</span>
+                            </div>
+                            <span class="dl-meta" data-translate-key="meta_ads">ZG Design Showcase • Online</span>
+                            <a href="https://www.zg-ziad-gamal.com/p/zg-design-ads.html" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-ads">
+                                <i class="fas fa-play-circle"></i>
+                                <span data-translate-key="btn_watch_ad">مشاهدة الإعلان</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- معرض لقطات الشاشة الحقيقي التابع للبرنامج والصور الجديدة المضافة -->
+            <section class="section">
+                <h2 class="section-title" data-translate-key="screenshotsTitle">لقطات الشاشة ومعرض التصاميم للبرنامج</h2>
+                <div class="gallery">
+                    <!-- الصور الجديدة المضافة -->
+                    <div class="gallery-item">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfo62xcmKGMmC1FdMdCRjNRYUN4F3AHaAArUN8hDzhXS-6ea9v6K8_1bbUQu2DHfH8VvqPuWA0_Q855bw1NQxM4qxF3v3lMH_mAutCJDE3R0EfrR-307BPJpRGxTc2yo_Q0_RtjBaT2wjMZtdCV4QvjRVzrK3SluBj6rzEftE1xOrnYbN1IVNmA06RamD5/s320/01-Your-Next-Chapter.png" data-full-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfo62xcmKGMmC1FdMdCRjNRYUN4F3AHaAArUN8hDzhXS-6ea9v6K8_1bbUQu2DHfH8VvqPuWA0_Q855bw1NQxM4qxF3v3lMH_mAutCJDE3R0EfrR-307BPJpRGxTc2yo_Q0_RtjBaT2wjMZtdCV4QvjRVzrK3SluBj6rzEftE1xOrnYbN1IVNmA06RamD5/s2000/01-Your-Next-Chapter.png" alt="Your Next Chapter">
+                        <div class="gallery-caption" data-translate-key="cap_new_1">تخطيط فصول المجلات والإصدارات التحريرية (Your Next Chapter)</div>
+                    </div>
+
+                    <div class="gallery-item">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhf4OQ682NYuvKdetGw_-m-LUOozkfaWz6fmcya8yVU5lup_a5SOVoADLlWx008nZDrivuBbIhW1-NtqxgOMNcg14DoMGwK0zSkGclizNELgTC3gpGqDDvepNeTKZrIK6owlQYKXb1xdBDx0I9Y2rsivuu3GDpcBzEErHSH6nKlUvqY12lj2Wb7CiVu6w1F/s320/02-Egyptian-Inspiration.png" data-full-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhf4OQ682NYuvKdetGw_-m-LUOozkfaWz6fmcya8yVU5lup_a5SOVoADLlWx008nZDrivuBbIhW1-NtqxgOMNcg14DoMGwK0zSkGclizNELgTC3gpGqDDvepNeTKZrIK6owlQYKXb1xdBDx0I9Y2rsivuu3GDpcBzEErHSH6nKlUvqY12lj2Wb7CiVu6w1F/s2000/02-Egyptian-Inspiration.png" alt="Egyptian Inspiration">
+                        <div class="gallery-caption" data-translate-key="cap_new_2">تصميم أغلفة ومقالات مستوحاة من الهوية الفنية (Egyptian Inspiration)</div>
+                    </div>
+
+                    <div class="gallery-item">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiigISKyRwlooz7FKQBM-jw65Dc_vTTQw1v9Usp0p4sPWq-1QsHdxJVIwxaj5f5TKQDQJixmcvTQTPXGz6DidvEkPGThHKtVKK3FCbIBsd7iTNWFy-KynmXx3aC0ymDSXeKsTZO_UVxQbln3d-ht0xzhzBgljeLZr2_-aSOCFuEgXAKR4YqjXnUfz5gy953/s320/03-Create-With-Detail.png" data-full-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiigISKyRwlooz7FKQBM-jw65Dc_vTTQw1v9Usp0p4sPWq-1QsHdxJVIwxaj5f5TKQDQJixmcvTQTPXGz6DidvEkPGThHKtVKK3FCbIBsd7iTNWFy-KynmXx3aC0ymDSXeKsTZO_UVxQbln3d-ht0xzhzBgljeLZr2_-aSOCFuEgXAKR4YqjXnUfz5gy953/s2000/03-Create-With-Detail.png" alt="Create With Detail">
+                        <div class="gallery-caption" data-translate-key="cap_new_3">الابتكار بتفاصيل تايبوجرافية فائقة الدقة (Create With Detail)</div>
+                    </div>
+
+                    <div class="gallery-item">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg937C0BgF-qOmhrJWF7b8EqvGSP7SYcVTs7VgpjizT6T0CKhDJOGCMIQw423c0YSoL3uSPWue2XuLoYEZEef47GYTBy4DYf5vXkU6nWMAYP0w3rNbPNCjCMznbvJ2ZCy7aw5_uHI0kspc_OAK0qIPZ-N-qTZ3wZE_o1If68aZBvJnJkRxuCDco_UjoKMc9/s320/04-Windows-And-Linux.png" data-full-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg937C0BgF-qOmhrJWF7b8EqvGSP7SYcVTs7VgpjizT6T0CKhDJOGCMIQw423c0YSoL3uSPWue2XuLoYEZEef47GYTBy4DYf5vXkU6nWMAYP0w3rNbPNCjCMznbvJ2ZCy7aw5_uHI0kspc_OAK0qIPZ-N-qTZ3wZE_o1If68aZBvJnJkRxuCDco_UjoKMc9/s2000/04-Windows-And-Linux.png" alt="Windows And Linux">
+                        <div class="gallery-caption" data-translate-key="cap_new_4">دعم كامل لمنصات التشغيل ويندوز ولينكس (Windows & Linux)</div>
+                    </div>
+
+                    <div class="gallery-item">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh-U5VpKN4uIjEk_1FZAjnJ-D8Td6UEd07zFXzCSRkC5SijsChJP6aWRQTm30qcMprSoRlnu25ETTfyEUosyZS43bjsKOXW6bRkCR2Ls3NmcQ4BQ4lUC0xFJshtSXuS0bEfuFZXVW3WtMcMOFEuTB_tW0PCJfGeC9TS1BELkPRCuWHFmG7_bpHJRaC-OImn/s320/05-Start-Your-Story.png" data-full-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh-U5VpKN4uIjEk_1FZAjnJ-D8Td6UEd07zFXzCSRkC5SijsChJP6aWRQTm30qcMprSoRlnu25ETTfyEUosyZS43bjsKOXW6bRkCR2Ls3NmcQ4BQ4lUC0xFJshtSXuS0bEfuFZXVW3WtMcMOFEuTB_tW0PCJfGeC9TS1BELkPRCuWHFmG7_bpHJRaC-OImn/s2000/05-Start-Your-Story.png" alt="Start Your Story">
+                        <div class="gallery-caption" data-translate-key="cap_new_5">ابدأ قصتك الإبداعية ونسّق منشوراتك (Start Your Story)</div>
+                    </div>
+
+                    <!-- صور بيئة العمل والواجهة -->
+                    <div class="gallery-item">
+                        <img src="https://getartcraft.com/images/apps/designcraft/hero.webp" onerror="this.src='https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/ui-spread.png'" alt="ZG Design Magazine Spread">
+                        <div class="gallery-caption" data-translate-key="cap_1">مساحة العمل: تصميم مطوية مجلة متعددة الأعمدة مع تدفق النصوص</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/ui-spread.png" onerror="this.src='https://getartcraft.com/images/apps/designcraft/hero.webp'" alt="ZG Design UI Workspace">
+                        <div class="gallery-caption" data-translate-key="cap_2">تخطيط الصفحات وأدوات ضبط الفقرات والالتفاف الذكي</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/page-cover.png" onerror="this.src='https://getartcraft.com/images/apps/designcraft/hero.webp'" alt="ZG Design Magazine Cover">
+                        <div class="gallery-caption" data-translate-key="cap_3">تصميم غلاف احترافي كامل النزيف مع عناوين تايبوجرافية فائقة</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/page-2.png" onerror="this.src='https://getartcraft.com/images/apps/designcraft/hero.webp'" alt="ZG Design Typography Styles">
+                        <div class="gallery-caption" data-translate-key="cap_4">أنماط الفقرات والخطوط والأعمدة المبررة بدقة مليمترية</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/page-3.png" onerror="this.src='https://getartcraft.com/images/apps/designcraft/hero.webp'" alt="ZG Design Threaded Columns">
+                        <div class="gallery-caption" data-translate-key="cap_5">التفاف النصوص التلقائي حول الاقتباسات والأشكال والعناصر</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://raw.githubusercontent.com/storytold/designcraft/main/docs/images/page-4.png" onerror="this.src='https://getartcraft.com/images/apps/designcraft/hero.webp'" alt="ZG Design Swatches Palette">
+                        <div class="gallery-caption" data-translate-key="cap_6">إدارة عينات ألوان الطباعة CMYK وفصل الألوان والتحكم الكامل في الأحبار</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- الوصف التفصيلي والميزات التقنية -->
+            <section class="section">
+                <div class="description-card glass-card">
+                    <h2 class="section-title" data-translate-key="descriptionTitle">الوصف ومميزات البرنامج</h2>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-box">
+                            <i class="fas fa-columns"></i>
+                            <h4 data-translate-key="feat_1_title">الصفحات المتقابلة والصفحات الرئيسية</h4>
+                            <p data-translate-key="feat_1_desc">إدارة شاملة للمطويات (Spreads) والصفحات الرئيسية (Parent Pages) لتطبيق الترويسات وترقيم الصفحات تلقائياً على كامل المنشور.</p>
+                        </div>
+                        <div class="feature-box">
+                            <i class="fas fa-paragraph"></i>
+                            <h4 data-translate-key="feat_2_title">تنضيد ونصوص Knuth-Plass الاحترافي</h4>
+                            <p data-translate-key="feat_2_desc">خوارزمية محاذاة بصرية ومحاذاة الحواف وفواصل أسطر متطورة تضمن تطابق الفواصل المرئية تماماً مع الناتج الطباعي في ملفات الـ PDF.</p>
+                        </div>
+                        <div class="feature-box">
+                            <i class="fas fa-print"></i>
+                            <h4 data-translate-key="feat_3_title">جاهزية طباعية بمعايير عالمية (CMYK)</h4>
+                            <p data-translate-key="feat_3_desc">تصدير مباشر لمطابع الأوفست والديجيتال بدقة تامة مع دعم علامات القطع (Crop Marks) وهوامش النزيف (Bleed) وتضمين الخطوط بالكامل.</p>
+                        </div>
+                        <div class="feature-box">
+                            <i class="fas fa-bolt"></i>
+                            <h4 data-translate-key="feat_4_title">أداء صاروخي مبني بلغة Rust</h4>
+                            <p data-translate-key="feat_4_desc">معالجة فورية للمستندات الضخمة ذات مئات الصفحات باستخدام تقنيات SIMD وتصيير متعدد المسارات دون أي بطء أو استهلاك زائد للذاكرة.</p>
+                        </div>
+                        <div class="feature-box">
+                            <i class="fas fa-file-export"></i>
+                            <h4 data-translate-key="feat_5_title">توافقية IDML وتبادل الملفات</h4>
+                            <p data-translate-key="feat_5_desc">استيراد وتصدير حزم IDML الشهيرة لسهولة تبادل المشروعات مع استوديوهات التصميم والناشرين دون فقدان التنسيقات.</p>
+                        </div>
+                        <div class="feature-box">
+                            <i class="fas fa-robot"></i>
+                            <h4 data-translate-key="feat_6_title">أتمتة ذكية عبر بروتوكول MCP</h4>
+                            <p data-translate-key="feat_6_desc">إمكانية توجيه وتصميم وتوليد وتعديل صفحات المجلات آلياً عبر قنوات تحكم JSON ومساعدات الذكاء الاصطناعي بدقة هندسية.</p>
+                        </div>
+                    </div>
+
+                    <div class="app-long-desc" data-translate-key="longDescription">
+                        <p><strong>ZG Design</strong> هو الحل الهندسي الأحدث في عالم النشر المكتبي والتصميم الطباعي، مصمم خصيصاً للمصممين المحترفين، مخرجي المجلات، والناشرين الراغبين في امتلاك أدوات تخطيط متكاملة على أجهزتهم بكل حرية وسرعة ودون الحاجة لأي اشتراكات شهرية أو متطلبات اتصال إلزامية.</p>
+
+                        <h3>🔹 ميزات التايبوجرافي والتحكم بالنصوص:</h3>
+                        <ul>
+                            <li><strong>تدفق القصص (Threaded Stories):</strong> ربط الإطارات النصية عبر الصفحات المتعددة بسلاسة فائقة، مع الحفاظ على ترابط المحتوى.</li>
+                            <li><strong>أنماط متقدمة:</strong> إمكانية حفظ أنماط الفقرات (Paragraph Styles) وأنماط المحارف (Character Styles) وتطبيقها بنقرة واحدة.</li>
+                            <li><strong>التفاف النصوص (Text Wrap):</strong> التفاف انسيابي ودقيق حول الصور الشفافة والإطارات الرسومية والاقتباسات المميزة.</li>
+                            <li><strong>شبكات الخط الأساسي (Baseline Grids):</strong> محاذاة دقيقة لأسطر النصوص بين الأعمدة المتقابلة وفق أرقى تقاليد الطباعة الاحترافية.</li>
+                        </ul>
+
+                        <h3>🔹 أدوات الألوان والتجهيز الطباعي:</h3>
+                        <ul>
+                            <li>لوحة عينات ألوان مخصصة مع دعم كامل لدرجات CMYK والألوان الخاصة (Spot Colors).</li>
+                            <li>إدارة الأشكال الموجهة (Vector Paths) والأطر الرسومية المخصصة.</li>
+                            <li>حفظ وتصدير بصيغة PDF/A للأرشفة بجانب PDF الطباعي عالي الجودة وصور PNG فائقة الوضوح.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- الفوتر المتطابق -->
+    <footer class="app-footer">
+        <a href="https://www.zg-ziad-gamal.com/" target="_blank" rel="noopener noreferrer">
+            All Rights Reserved Copyright © ZG ZIAD GAMAL
+        </a>
+        <p data-translate-key="powered_by">يعمل بواسطة ZG SERVER</p>
+    </footer>
+
+    <!-- نافذة حول المطور (About Modal) -->
+    <div id="about-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate-key="about_modal_title">حول المطور</h2>
+                <button class="modal-close-btn">×</button>
+            </div>
+            <div id="about-modal-body" class="modal-body">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiY8msPmxWaVYd-R35MDAS-7GnZhFFVjdU9SGXu2Ip53tU_LW7FYAvbaN7wQLj3tgTUuPIpxrXTfj1xkhe0rMk8EKzd5lqD419nvrj7R3TGlu0gTngDS3YUzHWDR3WB_djZkj1X635zwlkTw51ygun3-7h9UeMHiuvk1-GQ0djow_ViDR11lqn2x3K33xK8/s320/502463702_2856417251209619_8434838307459497445_n.jpg" alt="Ziad Gamal" class="profile-pic">
+                <h3 data-translate-key="about_name">زياد جمال شوقي محمد محمد يوسف</h3>
+                <h4 data-translate-key="about_dob">تاريخ الميلاد: 23/1/2003</h4>
+                <div class="info-section">
+                    <h5 data-translate-key="about_skills_title">القدرات</h5>
+                    <p data-translate-key="about_skill_1">إنشاء وتطوير مواقع الويب وتطبيقات النشر المتقدمة.</p>
+                    <p data-translate-key="about_skill_2">إنتاج فيديوهات موشن جرافيك مع تعليق صوتي بلهجات متعددة.</p>
+                    <p data-translate-key="about_skill_3">تصميم برامج أندرويد وتطبيقات سطح مكتب ذكية مثل ZG Design و ZG ZEZO APPS و ZGPT.</p>
+                </div>
+                <div class="info-section">
+                    <h5 data-translate-key="about_experience_title">أبرز الأعمال</h5>
+                    <p data-translate-key="about_exp_1">العمل مع شركة الدار العربي السعودية (19/5/2019).</p>
+                    <p data-translate-key="about_exp_2">المشاركة في مشروع القرآن العظيم وتطوير برامج للأندرويد والآيفون.</p>
+                    <p data-translate-key="about_exp_3">تصميم صور وموشن جرافيك لـ GAMES 2EGYPT.</p>
+                    <p data-translate-key="about_exp_5">أحد المشاركين في مشاريع شركة Huawei.</p>
+                </div>
+                <div class="info-section">
+                    <h5 data-translate-key="about_projects_title">مشاريعي</h5>
+                    <div class="projects-grid">
+                        <div class="project-card"><a href="https://www.zg-ziad-gamal.com/2022/09/2312023-coming-soon-on-01232023-2023-1.html" target="_blank" rel="noopener noreferrer"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiru3mgkldKe9Vuwg3DrzDvya06O_lh0TJprBCtf_AkhFUzOudLf_JCksoK-jLoneCr8eIBi6apuGHXYqaCTB4FpHnP7nBYncouwr-KbBFiFPcRLacy8IC0-hVIRRI-iA7vLVKAZYFYlQua/w265-h149/Screenshot+2022-04-20+230228.png" alt="Zezo Apps"></a></div>
+                        <div class="project-card"><a href="https://www.zg-ziad-gamal.com/p/zg-academy.html" target="_blank" rel="noopener noreferrer"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjdgPBuecwmCGT3iLzFRbDS7IZiz0kPvgy2puQfo7atyw0UFVhCNxIORaDX0uR1ZpM2UMc9KAswbUEQECJMMbYdzQKU4U2b77TOYs3gDH0wpMoA7FNnERjMlsWGdot26V-2VE7MnSt-7tD6cbEpgp-rhHh8ER61Q0nCKv0IWt-eUDypPuPJdh1XNvtXJf4/s320/1693185773962.png" alt="ZG ACADEMY"></a></div>
+                        <div class="project-card"><a href="https://www.zg-ziad-gamal.com/" target="_blank" rel="noopener noreferrer"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjI4-ZVHI7a3W47rg5IssbHBYFa0ISdZHDXi607t139mmGqFAWiFCzm_VtIIr9sjUoki72WF9FCz6uIDx49Mu_e82-3MXI7zUyyGhnZjZ9VSbnjT2mdLHYx9TYU2P1_yVnbC27bUEX3Qs9B63lsjhi84ir2T41lTyfR3OHDZnEuHbjwNN86__0KB2lDjJsg/s320/WhatsApp%20Image%202025-05-30%20at%201.46.14%20PM.png" alt="ZG WEB"></a></div>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h5 data-translate-key="about_certs_title">الشهادات المعتمدة</h5>
+                    <div class="certs-grid">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgh5WE5xJh7aRQHuoowFnN9XRDm0JTX2OE0qmB27B4DsScJAAw4HNFJWKfF-FLFcoFaNBX9BP6K8OdGv25ADXYTVzI5Z1W5NwXOItflBeIxHYZJ9otUJDGgzxEl8DoNhyK5-VGqgNyN4oVg4tg3oe0Fd7xQau67us8Rg9E8wreaN7csWJHMmXLJWdZJ3sx/w252-h252/university-of-oxford-badge-logo.png" alt="Oxford">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5FwgLgDDYFHCjP9gYUlrQOSGgS8I2EoYwOdFREipA_rPuMp-GxsdumuF74QleqcIP2adDlnKmSa03CXPKbhGTbaqb2jchO0kuyTDg8L3gQ2OjDqy0cHV3w-9Gu_-jX9nXj4CVejhs8hyphenhyphenzJgUQWLWW0AOwIoi7l9THGbuyQ5yhNwOoi7MPLzSb0CAh6is/s320/673468.png" alt="Certificate 1">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjH8CaE20YHoSwd2tDRb2uh3QT9_fhxdGv0pfvRh4qoXw_wr_B6fMJLHF6OSszTD5y2BUSfTkwQx5lw7UMFUiEIsqUqU7i4z203NKC9wcTAYhRf5r4BD1xiMucTqG5vrjYQ25Ap4ITQU57zpqPBYHO2L30VNG7Hq-rdcE65G_bT1iq197_M4EO3kxogf0Q/w168-h168/882726.png" alt="Certificate 2">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPycIR_qdGEwozH0r5pKm8SXFBEL1jUi3rl8qFstPkn9P-UXxWEKotMorH5gNSs_uUy0eoqfz71TK_iheKx6BfePKw8TAIy6MWF_9saoAbZSHZYikV0eAx8BREPsvXZZsvZLAn5TrPBf1qFy8r57wMMEOAiRZPamuLPkWSFmXoxZqjcBNcP0iAW-3YDK0/w152-h152/882749.png" alt="Certificate 3">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEioC4aVpzDV0C9WMQk7yiqT75FsA61aj-OiGFrPOgNlEwlNBQl9o5pwLTpuP1MkAPDKxPMphhlXB2g46Ddw3z0IjwBxBsAHlvwCWJkl1wUIzSz9pqjmJ_xrjJEIfnR0yhtlvF7a2Ya7Yx-s_p-d9VDpwxtcy2fxE7p3FNq7eCejabIDEFKv5enHhCMkvQg/w179-h179/amazon-1331550885972433276.png" alt="Amazon">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj3ekp13xqwuXwELEvGxtaFbxdX_E6CNmG2zdElPyqTxtn3HaG-bBNVH8vfvr9Me9AMp1G3OOgfu8iFPws3_qG0j2Zo_SJYpSalIflVaL_cXF3XnVgIXpbSfMrqlvpKtgBDacAJD_5Ng8jg7k9JtogS3BkcirIgBZO0TdvzLWvL7f41zqNXoBKrIdIgX7o/s1600/free-microsoft-1868944-1583108.webp" alt="Microsoft">
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h5 data-translate-key="about_contact_title">للتواصل والأعمال</h5>
+                    <p><strong>Email:</strong> zgzezoapps@gmail.com</p>
+                    <div class="social-card">
+                        <div class="profileimage">
+                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgWOkKWcrjfXetBqFUfU6YnHpqUS5xeGP5mcGoGliJbtghkSmBavoXlNipoLf_LFGSjUU2mkZ3FeUotucktqKIVmKj7WekWjFk7NdU_z_ZAnZDyyvdIn2MMvq4D0rbimXcXz5X3ZkCoYcE6ggwt-gRHrX9Iptyb0O6jA3Y8Gwh6a8Ir0f_zlUxJwUaZL05E/s1280/snapedit_1741900259898.png" alt="ZIAD GAMAL">
+                        </div>
+                        <div class="socialbar">
+                            <a id="facebook" href="https://www.facebook.com/ziad.ziad.75641" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                            <a id="instagram" href="https://www.instagram.com/zg_ziad_gamal/" target="_blank"><i class="fab fa-instagram"></i></a>
+                            <a id="whatsapp" href="https://api.whatsapp.com/send/?phone=201202377778" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                            <a id="telegram" href="https://t.me/ZG_ZIAD" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+                            <a id="youtube" href="https://www.youtube.com/channel/UCr9pR-04MZEr96VteNBlQ" target="_blank"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close-btn" data-translate-key="close">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة خدمات ZG الأخرى (Services Modal) -->
+    <div id="services-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate-key="services_modal_title">خدمات وتطبيقات ZG الأخرى</h2>
+                <button class="modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="services-list">
+                    <a href="https://www.zg-ziad-gamal.com/p/zgpt.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-brain"></i>
+                        <span>ZGPT - الذكاء الاصطناعي الشامل</span>
+                    </a>
+                    <a href="https://www.zg-ziad-gamal.com/p/zg-doc.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-file-word"></i>
+                        <span>ZG DOC - معالج المستندات</span>
+                    </a>
+                    <a href="https://www.zg-ziad-gamal.com/p/zg-slide.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-file-powerpoint"></i>
+                        <span>ZG SLIDE - العروض التقديمية</span>
+                    </a>
+                    <a href="https://www.zg-ziad-gamal.com/p/zg-code.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-file-code"></i>
+                        <span>ZG CODE - محرر الأكواد والبرمجة</span>
+                    </a>
+                    <a href="https://www.zg-ziad-gamal.com/p/zg-converter.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>ZG CONVERTER - محول التنسيقات</span>
+                    </a>
+                    <a href="https://www.zg-ziad-gamal.com/p/zg-studio-root-primary-color-007bff_20.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-camera-retro"></i>
+                        <span>ZG PHOTO - محرر الصور المتقدم</span>
+                    </a>
+                    <a href="https://www.zg-ziad-gamal.com/p/zg-video.html" target="_blank" rel="noopener noreferrer" class="service-link">
+                        <i class="fas fa-film"></i>
+                        <span>ZG VIDEO - مونتاج الفيديو</span>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close-btn" data-translate-key="close">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الإعدادات وتخصيص الألوان (Settings Modal) -->
+    <div id="settings-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate-key="settings_title">الإعدادات</h2>
+                <button class="modal-close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4 data-translate-key="settings_primary_color_title">تخصيص اللون الأساسي</h4>
+                    <div class="setting-item">
+                        <label data-translate-key="settings_primary_color_label">اللون الرئيسي للبرنامج</label>
+                        <input type="color" id="primary-color-picker" value="#7bb51c">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4 data-translate-key="settings_background_title">ألوان الخلفية المتدرجة</h4>
+                    <div class="setting-item">
+                        <label data-translate-key="settings_light_start">لون البداية (فاتح)</label>
+                        <input type="color" id="light-start-color-picker" value="#d4fc79">
+                    </div>
+                    <div class="setting-item">
+                        <label data-translate-key="settings_light_end">لون النهاية (فاتح)</label>
+                        <input type="color" id="light-end-color-picker" value="#96e6a1">
+                    </div>
+                    <hr style="border: 1px solid var(--glass-border); margin: 15px 0;">
+                    <div class="setting-item">
+                        <label data-translate-key="settings_dark_start">لون البداية (داكن)</label>
+                        <input type="color" id="dark-start-color-picker" value="#162210">
+                    </div>
+                    <div class="setting-item">
+                        <label data-translate-key="settings_dark_end">لون النهاية (داكن)</label>
+                        <input type="color" id="dark-end-color-picker" value="#1f3319">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4 data-translate-key="settings_animation_title">التحكم في الحركة</h4>
+                    <div class="setting-item">
+                        <label data-translate-key="settings_toggle_animation">تشغيل الخلفية المتحركة</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="animation-toggle-switch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4 data-translate-key="settings_reset_title">إعادة الضبط</h4>
+                    <div class="setting-item">
+                        <p data-translate-key="settings_reset_desc" style="flex-grow: 1; font-size: 0.85rem; opacity: 0.85;">استعادة الإعدادات والألوان الافتراضية للبرنامج.</p>
+                        <button id="reset-settings-btn" class="btn btn-danger" data-translate-key="settings_reset_button">إعادة تعيين الكل</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close-btn" data-translate-key="close">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة سياسة الخصوصية (Privacy Modal) -->
+    <div id="privacy-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-translate-key="privacy_modal_title">سياسة الخصوصية</h2>
+                <button class="modal-close-btn">×</button>
+            </div>
+            <div id="privacy-modal-body" class="modal-body" data-translate-key="privacy_policy_content">
+                <!-- يُحقن عبر الجافاسكريبت -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close-btn" data-translate-key="close">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة معاينة الصور المكبرة -->
+    <div id="image-modal-overlay" class="modal-overlay">
+        <div class="image-modal-content">
+            <button id="image-modal-close-btn" class="modal-close-btn">×</button>
+            <img id="modal-image" src="" alt="معاينة الشاشة">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // العناصر العامة
+            const htmlTag = document.documentElement;
+            const body = document.body;
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const langButtons = {
+                ar: document.getElementById('lang-ar'),
+                en: document.getElementById('lang-en'),
+                zh: document.getElementById('lang-zh')
+            };
+
+            // النوافذ المنبثقة
+            const servicesToggleBtn = document.getElementById('services-toggle-btn');
+            const aboutToggleBtn = document.getElementById('about-toggle-btn');
+            const privacyToggleBtn = document.getElementById('privacy-toggle-btn');
+            const settingsToggleBtn = document.getElementById('settings-toggle-btn');
+
+            const servicesModal = document.getElementById('services-modal-overlay');
+            const aboutModal = document.getElementById('about-modal-overlay');
+            const privacyModal = document.getElementById('privacy-modal-overlay');
+            const settingsModal = document.getElementById('settings-modal-overlay');
+            const imageModal = document.getElementById('image-modal-overlay');
+            const modalImage = document.getElementById('modal-image');
+            const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
+
+            // إعدادات المظهر والتحكم
+            const primaryColorPicker = document.getElementById('primary-color-picker');
+            const lightStartColorPicker = document.getElementById('light-start-color-picker');
+            const lightEndColorPicker = document.getElementById('light-end-color-picker');
+            const darkStartColorPicker = document.getElementById('dark-start-color-picker');
+            const darkEndColorPicker = document.getElementById('dark-end-color-picker');
+            const animationToggle = document.getElementById('animation-toggle-switch');
+            const resetSettingsBtn = document.getElementById('reset-settings-btn');
+
+            // قواميس اللغات (العربية، الإنجليزية، الصينية)
+            const translations = {
+                ar: {
+                    pageTitle: "ZG Design - برنامج تصميم المجلات والنشر المكتبي الاحترافي",
+                    appName: "ZG Design",
+                    shortDescription: "برنامج النشر المكتبي والتخطيط الاحترافي الأقوى لتصميم المجلات والكتب والمنشورات، مع معالج طباعي فائق الدقة، وتدفق نصوص ذكي، وتصدير PDF عالي الجودة للطباعة.",
+                    os_windows: "Windows",
+                    meta_windows: "x64 Installer (.msi) • 65 MB",
+                    dl_btn_win: "تحميل لويندوز",
+                    os_linux: "Linux",
+                    meta_linux: "x86_64 Tarball • 52 MB",
+                    dl_btn_linux: "تحميل للينكس",
+                    watch_ad_title: "إعلان البرنامج",
+                    meta_ads: "ZG Design Showcase • Online",
+                    btn_watch_ad: "مشاهدة الإعلان",
+                    screenshotsTitle: "لقطات الشاشة ومعرض التصاميم للبرنامج",
+                    cap_new_1: "تخطيط فصول المجلات والإصدارات التحريرية (Your Next Chapter)",
+                    cap_new_2: "تصميم أغلفة ومقالات مستوحاة من الهوية الفنية (Egyptian Inspiration)",
+                    cap_new_3: "الابتكار بتفاصيل تايبوجرافية فائقة الدقة (Create With Detail)",
+                    cap_new_4: "دعم كامل لمنصات التشغيل ويندوز ولينكس (Windows & Linux)",
+                    cap_new_5: "ابدأ قصتك الإبداعية ونسّق منشوراتك (Start Your Story)",
+                    cap_1: "مساحة العمل: تصميم مطوية مجلة متعددة الأعمدة مع تدفق النصوص",
+                    cap_2: "تخطيط الصفحات وأدوات ضبط الفقرات والالتفاف الذكي",
+                    cap_3: "تصميم غلاف احترافي كامل النزيف مع عناوين تايبوجرافية فائقة",
+                    cap_4: "أنماط الفقرات والخطوط والأعمدة المبررة بدقة مليمترية",
+                    cap_5: "التفاف النصوص التلقائي حول الاقتباسات والأشكال والعناصر",
+                    cap_6: "إدارة عينات ألوان الطباعة CMYK وفصل الألوان والتحكم الكامل في الأحبار",
+                    descriptionTitle: "الوصف ومميزات البرنامج",
+                    feat_1_title: "الصفحات المتقابلة والصفحات الرئيسية",
+                    feat_1_desc: "إدارة شاملة للمطويات (Spreads) والصفحات الرئيسية (Parent Pages) لتطبيق الترويسات وترقيم الصفحات تلقائياً على كامل المنشور.",
+                    feat_2_title: "تنضيد ونصوص Knuth-Plass الاحترافي",
+                    feat_2_desc: "خوارزمية محاذاة بصرية ومحاذاة الحواف وفواصل أسطر متطورة تضمن تطابق الفواصل المرئية تماماً مع الناتج الطباعي في ملفات الـ PDF.",
+                    feat_3_title: "جاهزية طباعية بمعايير عالمية (CMYK)",
+                    feat_3_desc: "تصدير مباشر لمطابع الأوفست والديجيتال بدقة تامة مع دعم علامات القطع (Crop Marks) وهوامش النزيف (Bleed) وتضمين الخطوط بالكامل.",
+                    feat_4_title: "أداء صاروخي مبني بلغة Rust",
+                    feat_4_desc: "معالجة فورية للمستندات الضخمة ذات مئات الصفحات باستخدام تقنيات SIMD وتصيير متعدد المسارات دون أي بطء أو استهلاك زائد للذاكرة.",
+                    feat_5_title: "توافقية IDML وتبادل الملفات",
+                    feat_5_desc: "استيراد وتصدير حزم IDML الشهيرة لسهولة تبادل المشروعات مع استوديوهات التصميم والناشرين دون فقدان التنسيقات.",
+                    feat_6_title: "أتمتة ذكية عبر بروتوكول MCP",
+                    feat_6_desc: "إمكانية توجيه وتصميم وتوليد وتعديل صفحات المجلات آلياً عبر قنوات تحكم JSON ومساعدات الذكاء الاصطناعي بدقة هندسية.",
+                    longDescription: `
+                        <p><strong>ZG Design</strong> هو الحل الهندسي الأحدث في عالم النشر المكتبي والتصميم الطباعي، مصمم خصيصاً للمصممين المحترفين، مخرجي المجلات، والناشرين الراغبين في امتلاك أدوات تخطيط متكاملة على أجهزتهم بكل حرية وسرعة ودون الحاجة لأي اشتراكات شهرية أو متطلبات اتصال إلزامية.</p>
+                        <h3>🔹 ميزات التايبوجرافي والتحكم بالنصوص:</h3>
+                        <ul>
+                            <li><strong>تدفق القصص (Threaded Stories):</strong> ربط الإطارات النصية عبر الصفحات المتعددة بسلاسة فائقة، مع الحفاظ على ترابط المحتوى.</li>
+                            <li><strong>أنماط متقدمة:</strong> إمكانية حفظ أنماط الفقرات (Paragraph Styles) وأنماط المحارف (Character Styles) وتطبيقها بنقرة واحدة.</li>
+                            <li><strong>التفاف النصوص (Text Wrap):</strong> التفاف انسيابي ودقيق حول الصور الشفافة والإطارات الرسومية والاقتباسات المميزة.</li>
+                            <li><strong>شبكات الخط الأساسي (Baseline Grids):</strong> محاذاة دقيقة لأسطر النصوص بين الأعمدة المتقابلة وفق أرقى تقاليد الطباعة الاحترافية.</li>
+                        </ul>
+                        <h3>🔹 أدوات الألوان والتجهيز الطباعي:</h3>
+                        <ul>
+                            <li>لوحة عينات ألوان مخصصة مع دعم كامل لدرجات CMYK والألوان الخاصة (Spot Colors).</li>
+                            <li>إدارة الأشكال الموجهة (Vector Paths) والأطر الرسومية المخصصة.</li>
+                            <li>حفظ وتصدير بصيغة PDF/A للأرشفة بجانب PDF الطباعي عالي الجودة وصور PNG فائقة الوضوح.</li>
+                        </ul>
+                    `,
+                    powered_by: "يعمل بواسطة ZG SERVER",
+                    about_modal_title: "حول المطور",
+                    about_name: "زياد جمال شوقي محمد محمد يوسف",
+                    about_dob: "تاريخ الميلاد: 23/1/2003",
+                    about_skills_title: "القدرات",
+                    about_skill_1: "إنشاء وتطوير مواقع الويب وتطبيقات النشر المتقدمة.",
+                    about_skill_2: "إنتاج فيديوهات موشن جرافيك مع تعليق صوتي بلهجات متعددة.",
+                    about_skill_3: "تصميم برامج أندرويد وتطبيقات سطح مكتب ذكية مثل ZG Design و ZG ZEZO APPS و ZGPT.",
+                    about_experience_title: "أبرز الأعمال",
+                    about_exp_1: "العمل مع شركة الدار العربي السعودية (19/5/2019).",
+                    about_exp_2: "المشاركة في مشروع القرآن العظيم وتطوير برامج للأندرويد والآيفون.",
+                    about_exp_3: "تصميم صور وموشن جرافيك لـ GAMES 2EGYPT.",
+                    about_exp_5: "أحد المشاركين في مشاريع شركة Huawei.",
+                    about_projects_title: "مشاريعي",
+                    about_certs_title: "الشهادات المعتمدة",
+                    about_contact_title: "للتواصل والأعمال",
+                    close: "إغلاق",
+                    services_modal_title: "خدمات وتطبيقات ZG الأخرى",
+                    settings_title: "الإعدادات",
+                    settings_primary_color_title: "تخصيص اللون الأساسي",
+                    settings_primary_color_label: "اللون الرئيسي للبرنامج",
+                    settings_background_title: "ألوان الخلفية المتدرجة",
+                    settings_light_start: "لون البداية (فاتح)",
+                    settings_light_end: "لون النهاية (فاتح)",
+                    settings_dark_start: "لون البداية (داكن)",
+                    settings_dark_end: "لون النهاية (داكن)",
+                    settings_animation_title: "التحكم في الحركة",
+                    settings_toggle_animation: "تشغيل الخلفية المتحركة",
+                    settings_reset_title: "إعادة الضبط",
+                    settings_reset_desc: "استعادة الإعدادات والألوان الافتراضية للبرنامج.",
+                    settings_reset_button: "إعادة تعيين الكل",
+                    privacy_modal_title: "سياسة الخصوصية",
+                    privacy_policy_content: `
+                        <p>في <strong>ZG Design</strong>، نولي أقصى درجات الاهتمام لخصوصية وأمان مستخدمينا. يعمل هذا البرنامج بشكل مستقل تماماً على جهازك.</p>
+                        <h3>1. معالجة البيانات محلياً</h3>
+                        <p>كافة المشروعات، الصفحات، الخطوط، وملفات الوسائط التي تقوم بإنشائها أو تعديلها داخل البرنامج يتم حفظها ومعالجتها محلياً فقط على جهازك الشخصي دون أي إرسال لخوادم خارجية.</p>
+                        <h3>2. عدم جمع البيانات الشخصية</h3>
+                        <p>لا يقوم البرنامج بتسجيل أي بيانات تعريف شخصية أو نشاط استخدام، ولا يتطلب أي تسجيل دخول أو حسابات إلزامية للعمل.</p>
+                        <h3>3. الحفظ والتفضيلات</h3>
+                        <p>تُحفظ كافة إعدادات الموقع والألوان والوضع المظلم داخل التخزين المحلي (Local Storage) لمتصفحك فقط.</p>
+                    `
+                },
+                en: {
+                    pageTitle: "ZG Design - Professional Desktop Publishing & Page Layout",
+                    appName: "ZG Design",
+                    shortDescription: "The ultimate desktop publishing and layout engineering suite for magazines, books, and brochures. Features professional typography composing, threaded stories, parent pages, and print-ready PDF output.",
+                    os_windows: "Windows",
+                    meta_windows: "x64 Installer (.msi) • 65 MB",
+                    dl_btn_win: "Download for Windows",
+                    os_linux: "Linux",
+                    meta_linux: "x86_64 Tarball • 52 MB",
+                    dl_btn_linux: "Download for Linux",
+                    watch_ad_title: "App Promo Ad",
+                    meta_ads: "ZG Design Showcase • Online",
+                    btn_watch_ad: "Watch Ad",
+                    screenshotsTitle: "Application Screenshots & Gallery",
+                    cap_new_1: "Editorial chapter layout and magazine pacing (Your Next Chapter)",
+                    cap_new_2: "Cover and spread composition with cultural heritage (Egyptian Inspiration)",
+                    cap_new_3: "High-precision detailed typography craftsmanship (Create With Detail)",
+                    cap_new_4: "Cross-platform engineering for Windows and Linux (Windows & Linux)",
+                    cap_new_5: "Start your publishing journey seamlessly (Start Your Story)",
+                    cap_1: "Workspace: Multi-column magazine spread design with threaded stories",
+                    cap_2: "Page layout tools with paragraph formatting and intelligent text wrap",
+                    cap_3: "Full-bleed magazine cover design with sophisticated display typography",
+                    cap_4: "Paragraph and character styles with precise multi-column alignment",
+                    cap_5: "Automatic text wrap around graphics, quotes, and custom shapes",
+                    cap_6: "CMYK color swatch management, ink separation, and press prep",
+                    descriptionTitle: "Overview & Features",
+                    feat_1_title: "Spreads & Parent Pages",
+                    feat_1_desc: "Comprehensive spread management with parent pages to automatically apply headers, footers, and page numbers across the publication.",
+                    feat_2_title: "Knuth-Plass Paragraph Composer",
+                    feat_2_desc: "High-precision optical margin alignment and hyphenation dictionary ensuring screen composition precisely matches printed output.",
+                    feat_3_title: "Print-Ready Standard (CMYK)",
+                    feat_3_desc: "Direct export for offset and digital presses with full bleed margins, crop marks, and complete embedded font support.",
+                    feat_4_title: "High Performance in Pure Rust",
+                    feat_4_desc: "Handle multi-hundred-page catalogs smoothly with SIMD multithreaded rendering and minimal RAM footprint.",
+                    feat_5_title: "IDML Format Compatibility",
+                    feat_5_desc: "Seamlessly import and export industry-standard IDML packages to collaborate with publishing houses without styling loss.",
+                    feat_6_title: "Smart Agent Automation (MCP)",
+                    feat_6_desc: "Automate page construction, typesetting, and asset placement via JSON control channels and AI assistants.",
+                    longDescription: `
+                        <p><strong>ZG Design</strong> is the premier desktop publishing and page layout engineering tool built for designers, magazine art directors, and publishers who value total control, blazing speed, and zero recurring fees.</p>
+                        <h3>🔹 Advanced Typography & Story Flow:</h3>
+                        <ul>
+                            <li><strong>Threaded Stories:</strong> Link text frames smoothly across multiple pages and spreads.</li>
+                            <li><strong>Reusable Styles:</strong> Maintain design consistency with paragraph, character, and object styles.</li>
+                            <li><strong>Contour Text Wrap:</strong> Effortlessly wrap body copy around custom graphics, cutouts, and pull quotes.</li>
+                            <li><strong>Baseline Grids:</strong> Precise vertical rhythm and baseline alignment across columns.</li>
+                        </ul>
+                        <h3>🔹 Color Management & Print Output:</h3>
+                        <ul>
+                            <li>Custom color palettes with full CMYK and Spot Color support.</li>
+                            <li>Vector framing, path editing, and graphic placement.</li>
+                            <li>High-fidelity PDF/A archiving and commercial press PDF export.</li>
+                        </ul>
+                    `,
+                    powered_by: "Powered by ZG SERVER",
+                    about_modal_title: "About the Developer",
+                    about_name: "Ziad Gamal Shawky Muhammad Muhammad Yusuf",
+                    about_dob: "Date of Birth: 23/1/2003",
+                    about_skills_title: "Skills",
+                    about_skill_1: "Developing websites and advanced publishing applications.",
+                    about_skill_2: "Producing motion graphics videos with multi-dialect voiceovers.",
+                    about_skill_3: "Designing desktop and Android applications like ZG Design, ZG ZEZO APPS, and ZGPT.",
+                    about_experience_title: "Key Works",
+                    about_exp_1: "Worked with Al Dar Al Arabi Saudi Company (19/5/2019).",
+                    about_exp_2: "Participated in the Great Quran project, developing apps for Android and iPhone.",
+                    about_exp_3: "Designed graphics and motion assets for GAMES 2EGYPT.",
+                    about_exp_5: "Contributor to projects at Huawei.",
+                    about_projects_title: "My Projects",
+                    about_certs_title: "Certifications",
+                    about_contact_title: "For Business & Contact",
+                    close: "Close",
+                    services_modal_title: "Our Other ZG Services",
+                    settings_title: "Settings",
+                    settings_primary_color_title: "Customize Primary Color",
+                    settings_primary_color_label: "Primary App Accent",
+                    settings_background_title: "Background Gradients",
+                    settings_light_start: "Start Color (Light)",
+                    settings_light_end: "End Color (Light)",
+                    settings_dark_start: "Start Color (Dark)",
+                    settings_dark_end: "End Color (Dark)",
+                    settings_animation_title: "Animation Control",
+                    settings_toggle_animation: "Enable Animated Background",
+                    settings_reset_title: "Reset",
+                    settings_reset_desc: "Restore all defaults and clear local preferences.",
+                    settings_reset_button: "Reset All",
+                    privacy_modal_title: "Privacy Policy",
+                    privacy_policy_content: `
+                        <p>At <strong>ZG Design</strong>, we strictly prioritize your privacy. The app runs completely on your local workstation.</p>
+                        <h3>1. Local Data Processing</h3>
+                        <p>All publication files, spreads, images, and fonts are created and compiled locally without contacting any telemetry or tracking servers.</p>
+                        <h3>2. Zero Data Collection</h3>
+                        <p>We do not collect personal identifiers, emails, or usage statistics.</p>
+                        <h3>3. Preferences</h3>
+                        <p>Interface preferences such as theme and colors are securely kept on your device via Local Storage.</p>
+                    `
+                },
+                zh: {
+                    pageTitle: "ZG Design - 专业页面排版与桌面出版软件",
+                    appName: "ZG Design",
+                    shortDescription: "面向杂志、书籍、宣传册的高性能专业页面排版与桌面出版套件。具备专业级段落排版引擎、多栏文本串联、主页管理以及符合工业印刷标准的 PDF 导出功能。",
+                    os_windows: "Windows",
+                    meta_windows: "x64 安装包 (.msi) • 65 MB",
+                    dl_btn_win: "Windows 版下载",
+                    os_linux: "Linux",
+                    meta_linux: "x86_64 压缩包 • 52 MB",
+                    dl_btn_linux: "Linux 版下载",
+                    watch_ad_title: "软件宣传演示",
+                    meta_ads: "ZG Design Showcase • 在线观看",
+                    btn_watch_ad: "观看宣传演示",
+                    screenshotsTitle: "软件真实界面截图与展示",
+                    cap_new_1: "章节排版与多页版式设计 (Your Next Chapter)",
+                    cap_new_2: "文化与艺术风格杂志封面设计 (Egyptian Inspiration)",
+                    cap_new_3: "毫米级微排版与文字细节雕琢 (Create With Detail)",
+                    cap_new_4: "全面兼容 Windows 与 Linux 桌面平台 (Windows & Linux)",
+                    cap_new_5: "开启您的出版与排版创作之旅 (Start Your Story)",
+                    cap_1: "工作区：跨页多栏杂志版面设计与串联文本",
+                    cap_2: "页面版式布局工具与段落排版、绕排设置",
+                    cap_3: "全出血杂志封面排版与高精度标题设计",
+                    cap_4: "段落和字符样式，精确到毫米级的对齐控制",
+                    cap_5: "文字自动围绕插图、引语和自定义图形绕排",
+                    cap_6: "CMYK 印刷色板管理、分色与墨水印刷控制",
+                    descriptionTitle: "功能概览与特性",
+                    feat_1_title: "跨页与主页管理",
+                    feat_1_desc: "全面的跨页（Spreads）和主页（Parent Pages）体系，自动应用页眉、页脚及全局页码。",
+                    feat_2_title: "Knuth-Plass 专业段落排版引擎",
+                    feat_2_desc: "光学边距对齐与字典连字符算法，确保屏幕呈现与最终印刷 PDF 换行完全一致。",
+                    feat_3_title: "工业级 CMYK 印刷输出",
+                    feat_3_desc: "直接导出适用于胶印和数码印刷的高精文件，支持出血线、裁切标记及字体完整内嵌。",
+                    feat_4_title: "基于 Rust 的极致性能",
+                    feat_4_desc: "借助 SIMD 与多线程渲染技术，秒级打开并平滑处理数百页复杂出版物，极低内存占用。",
+                    feat_5_title: "IDML 格式无缝兼容",
+                    feat_5_desc: "轻松导入与导出行业通用的 IDML 格式，方便与各类出版机构和设计团队进行协同。",
+                    feat_6_title: "智能 MCP 自动化协议",
+                    feat_6_desc: "可通过 JSON 指令与 AI 助手自动进行页面构建、版式排版与图形放置。",
+                    longDescription: `
+                        <p><strong>ZG Design</strong> 专为追求极致排版效率、完全本地控制和零订阅负担的设计师、杂志主编及出版人打造。</p>
+                        <h3>🔹 强大的文字排版控制：</h3>
+                        <ul>
+                            <li><strong>文本串联（Threaded Stories）：</strong> 让文字跨越多个页面与栏目顺畅流淌。</li>
+                            <li><strong>样式管理：</strong> 一键应用段落样式、字符样式及对象属性，确保全刊一致。</li>
+                            <li><strong>智能绕排（Text Wrap）：</strong> 紧密贴合透明图片、不规则图形及装饰引语。</li>
+                            <li><strong>基线网格（Baseline Grids）：</strong> 确保各栏文字在视觉基线上保持完美的垂直节奏。</li>
+                        </ul>
+                        <h3>🔹 专业的色彩管理与出版：</h3>
+                        <ul>
+                            <li>完备的色彩样本面板，全面支持 CMYK 与专色（Spot Colors）。</li>
+                            <li>矢量路径编辑、自定义几何图框与高清插图排版。</li>
+                            <li>支持导出用于归档的 PDF/A 以及高分辨率 PNG 文件。</li>
+                        </ul>
+                    `,
+                    powered_by: "由 ZG SERVER 提供技术支持",
+                    about_modal_title: "关于开发者",
+                    about_name: "齐亚德·贾马尔·肖基·穆罕默德·优素福",
+                    about_dob: "出生日期：2003年1月23日",
+                    about_skills_title: "专业能力",
+                    about_skill_1: "网站架构及现代化桌面出版应用程序开发。",
+                    about_skill_2: "制作动态图形视频与多方言专业配音。",
+                    about_skill_3: "设计 Android 与桌面智能程序（如 ZG Design, ZG ZEZO APPS, ZGPT）。",
+                    about_experience_title: "代表成就",
+                    about_exp_1: "与沙特阿拉伯达尔公司合作 (2019/5/19)。",
+                    about_exp_2: "参与“古兰经”重点项目，研发 Android 与 iPhone 应用。",
+                    about_exp_3: "为 GAMES 2EGYPT 制作图像与视觉动效。",
+                    about_exp_5: "华为生态项目贡献者。",
+                    about_projects_title: "我的项目",
+                    about_certs_title: "专业认证",
+                    about_contact_title: "商务洽谈与联系",
+                    close: "关闭",
+                    services_modal_title: "ZG 旗下其他服务",
+                    settings_title: "系统设置",
+                    settings_primary_color_title: "自定义主色调",
+                    settings_primary_color_label: "应用程序主色",
+                    settings_background_title: "动态背景渐变色",
+                    settings_light_start: "起始颜色 (浅色)",
+                    settings_light_end: "结束颜色 (浅色)",
+                    settings_dark_start: "起始颜色 (深色)",
+                    settings_dark_end: "结束颜色 (深色)",
+                    settings_animation_title: "动画控制",
+                    settings_toggle_animation: "开启背景动态流动",
+                    settings_reset_title: "恢复出厂设置",
+                    settings_reset_desc: "清除所有本地个性化设置并还原默认状态。",
+                    settings_reset_button: "全部重置",
+                    privacy_modal_title: "隐私政策",
+                    privacy_policy_content: `
+                        <p>在 <strong>ZG Design</strong>，我们极其重视您的数字隐私。本程序完全在您的本地工作站上运行。</p>
+                        <h3>1. 本地安全处理</h3>
+                        <p>所有版面设计、图片、排版文字和字体全部留在您的计算机本地，不向任何外部服务器发送您的排版内容。</p>
+                        <h3>2. 零数据追踪</h3>
+                        <p>我们绝不收集任何个人身份标识或使用数据。</p>
+                        <h3>3. 偏好保存</h3>
+                        <p>语言、主题及配色仅保存在您本地浏览器的 Local Storage 中。</p>
+                    `
+                }
+            };
+
+            // محاكاة زر التحميل المباشر مع شريط تقدم سريع
+            const downloadButtons = document.querySelectorAll('.download-btn-action');
+            downloadButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (btn.classList.contains('downloading')) {
+                        e.preventDefault();
+                        return;
+                    }
+                    e.preventDefault();
+                    btn.classList.add('downloading');
+                    const targetUrl = btn.href;
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                        setTimeout(() => { btn.classList.remove('downloading'); }, 1500);
+                    }, 1200);
+                });
+            });
+
+            // تبديل المظهر (فاتح / داكن)
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+                localStorage.setItem('zg_theme', theme);
+                applyCustomColors();
+            };
+
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
+                applyTheme(newTheme);
+            });
+
+            // النوافذ المنبثقة
+            const openModal = (modal) => { modal.style.display = 'flex'; };
+            const closeModal = (modal) => { modal.style.display = 'none'; };
+
+            servicesToggleBtn.addEventListener('click', () => openModal(servicesModal));
+            aboutToggleBtn.addEventListener('click', () => openModal(aboutModal));
+            privacyToggleBtn.addEventListener('click', () => openModal(privacyModal));
+            settingsToggleBtn.addEventListener('click', () => openModal(settingsModal));
+
+            modalCloseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    closeModal(e.target.closest('.modal-overlay'));
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-overlay')) {
+                    closeModal(e.target);
+                }
+            });
+
+            // تكبير لقطات الشاشة (باستخدام الرابط عالي الجودة data-full-src إن وُجد)
+            const galleryItems = document.querySelectorAll('.gallery-item img');
+            galleryItems.forEach(img => {
+                img.addEventListener('click', () => {
+                    modalImage.src = img.getAttribute('data-full-src') || img.src;
+                    openModal(imageModal);
+                });
+            });
+
+            // تغيير اللغة
+            function changeLanguage(lang) {
+                if (!translations[lang]) return;
+
+                htmlTag.lang = lang;
+                htmlTag.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+                document.querySelectorAll('[data-translate-key]').forEach(el => {
+                    const key = el.getAttribute('data-translate-key');
+                    if (translations[lang][key]) {
+                        if (key === 'longDescription' || key === 'privacy_policy_content') {
+                            el.innerHTML = translations[lang][key];
+                        } else {
+                            el.innerText = translations[lang][key];
+                        }
+                    }
+                });
+
+                document.title = translations[lang].pageTitle || "ZG Design";
+                Object.values(langButtons).forEach(btn => btn.classList.remove('active'));
+                langButtons[lang].classList.add('active');
+                localStorage.setItem('zg_language', lang);
+            }
+
+            Object.keys(langButtons).forEach(lang => {
+                langButtons[lang].addEventListener('click', () => changeLanguage(lang));
+            });
+
+            // تخصيص الألوان والحركة
+            const defaultColors = {
+                primary: '#7bb51c',
+                light: { start: '#d4fc79', end: '#96e6a1' },
+                dark: { start: '#162210', end: '#1f3319' }
+            };
+
+            function applyCustomColors() {
+                const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+                const startColor = localStorage.getItem(`zg-bg-${currentTheme}-start`) || defaultColors[currentTheme].start;
+                const endColor = localStorage.getItem(`zg-bg-${currentTheme}-end`) || defaultColors[currentTheme].end;
+                document.documentElement.style.setProperty('--bg-gradient-start', startColor);
+                document.documentElement.style.setProperty('--bg-gradient-end', endColor);
+            }
+
+            function applyPrimaryColor() {
+                const primaryColor = localStorage.getItem('zg-primary-color') || defaultColors.primary;
+                document.documentElement.style.setProperty('--primary-color', primaryColor);
+            }
+
+            function toggleAnimation(enabled) {
+                localStorage.setItem('zg_animation', enabled);
+                if (enabled) {
+                    body.classList.remove('animation-disabled');
+                } else {
+                    body.classList.add('animation-disabled');
+                }
+            }
+
+            primaryColorPicker.addEventListener('input', (e) => {
+                localStorage.setItem('zg-primary-color', e.target.value);
+                applyPrimaryColor();
+            });
+
+            lightStartColorPicker.addEventListener('input', (e) => {
+                localStorage.setItem('zg-bg-light-start', e.target.value);
+                applyCustomColors();
+            });
+            lightEndColorPicker.addEventListener('input', (e) => {
+                localStorage.setItem('zg-bg-light-end', e.target.value);
+                applyCustomColors();
+            });
+            darkStartColorPicker.addEventListener('input', (e) => {
+                localStorage.setItem('zg-bg-dark-start', e.target.value);
+                applyCustomColors();
+            });
+            darkEndColorPicker.addEventListener('input', (e) => {
+                localStorage.setItem('zg-bg-dark-end', e.target.value);
+                applyCustomColors();
+            });
+
+            animationToggle.addEventListener('change', (e) => toggleAnimation(e.target.checked));
+
+            resetSettingsBtn.addEventListener('click', () => {
+                const curLang = localStorage.getItem('zg_language') || 'ar';
+                const confirmText = curLang === 'ar' ? 'هل أنت متأكد من إعادة تعيين جميع الإعدادات؟' : curLang === 'zh' ? '您确定要重置所有设置吗？' : 'Are you sure you want to reset all settings?';
+                if (confirm(confirmText)) {
+                    localStorage.removeItem('zg_theme');
+                    localStorage.removeItem('zg_language');
+                    localStorage.removeItem('zg_animation');
+                    localStorage.removeItem('zg-primary-color');
+                    localStorage.removeItem('zg-bg-light-start');
+                    localStorage.removeItem('zg-bg-light-end');
+                    localStorage.removeItem('zg-bg-dark-start');
+                    localStorage.removeItem('zg-bg-dark-end');
+                    window.location.reload();
+                }
+            });
+
+            // تحميل الإعدادات الأولية
+            function initializeApp() {
+                const savedLang = localStorage.getItem('zg_language') || 'ar';
+                changeLanguage(savedLang);
+
+                const savedTheme = localStorage.getItem('zg_theme') || 'light';
+                applyTheme(savedTheme);
+
+                const savedPrimary = localStorage.getItem('zg-primary-color') || defaultColors.primary;
+                primaryColorPicker.value = savedPrimary;
+                applyPrimaryColor();
+
+                lightStartColorPicker.value = localStorage.getItem('zg-bg-light-start') || defaultColors.light.start;
+                lightEndColorPicker.value = localStorage.getItem('zg-bg-light-end') || defaultColors.light.end;
+                darkStartColorPicker.value = localStorage.getItem('zg-bg-dark-start') || defaultColors.dark.start;
+                darkEndColorPicker.value = localStorage.getItem('zg-bg-dark-end') || defaultColors.dark.end;
+                applyCustomColors();
+
+                const animPref = localStorage.getItem('zg_animation') !== 'false';
+                animationToggle.checked = animPref;
+                toggleAnimation(animPref);
+            }
+
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
